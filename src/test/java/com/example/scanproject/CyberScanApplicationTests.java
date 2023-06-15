@@ -1,38 +1,45 @@
 package com.example.scanproject;
 
-import com.example.scanproject.Controller.IngestController;
 import com.example.scanproject.Controller.StatusController;
+import com.example.scanproject.Controller.IngestController;
 import com.example.scanproject.Data.Scan;
 import com.example.scanproject.Data.ScanRepository;
 import com.example.scanproject.Data.ScanStatus;
-import org.aspectj.lang.annotation.Before;
+
+import com.example.scanproject.Process.ScanProcessor;
+import org.apache.catalina.core.ApplicationContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.time.Instant;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class CyberScanApplicationTests {
 
-    @Mock
+    @MockBean
     private ScanRepository scanRepository;
 
     @InjectMocks
@@ -41,24 +48,30 @@ public class CyberScanApplicationTests {
     @InjectMocks
     private StatusController statusController;
 
+    @MockBean
+    ScanProcessor scanProcessor;
+
     private MockMvc mockMvc;
 
-    @Before("")
+    @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(ingestController, statusController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(ingestController, statusController,scanRepository).build();
     }
 
     @Test
     public void testIngestController() throws Exception {
+        // Mock the behavior of scanRepository.save() method
+        when(scanRepository.save(any(Scan.class))).thenReturn(new Scan());
+
         MvcResult result = mockMvc.perform(post("/ingest"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
         assertNotNull(response);
 
         // Verify that the scan was saved
-        verify(scanRepository, times(1)).save(any(Scan.class));
+        verify(scanRepository).save(any(Scan.class));
     }
 
     @Test
