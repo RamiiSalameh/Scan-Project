@@ -1,15 +1,9 @@
-public class StatusResponse {
-    private ScanStatus status;
+package com.example.scanproject.Data;
 
-    public StatusResponse(ScanStatus status) {
-        this.status = status;
-    }
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    public ScanStatus getStatus() {
-        return status;
-    }
+@Repository
+public interface ScanRepository extends JpaRepository<Scan, Long> {
 
-    public void setStatus(ScanStatus status) {
-        this.status = status;
-    }
 }
