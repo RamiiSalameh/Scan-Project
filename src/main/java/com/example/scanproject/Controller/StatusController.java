@@ -3,7 +3,6 @@ package com.example.scanproject.Controller;
 import com.example.scanproject.Data.Scan;
 import com.example.scanproject.Data.ScanRepository;
 import com.example.scanproject.Data.ScanStatus;
-import com.example.scanproject.Process.ScanProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Instant;
 import java.util.Optional;
 
 @RestController

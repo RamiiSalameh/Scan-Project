@@ -2,11 +2,9 @@ package com.example.scanproject.Process;
 import com.example.scanproject.Data.Scan;
 import com.example.scanproject.Data.ScanRepository;
 import com.example.scanproject.Data.ScanStatus;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import java.util.concurrent.RejectedExecutionException;
@@ -61,8 +59,6 @@ public class ScanProcessor {
             });
         } catch (RejectedExecutionException e) {
             // Handle rejection if the task cannot be accepted by the thread pool
-            // This can happen if the thread pool is full or has reached its maximum capacity
-            // You can decide how to handle such scenarios based on your requirements
             e.printStackTrace();
         }
     }
